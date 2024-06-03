@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Docker B P 
 
 on:
   # Run workflow on push events to the main branch
