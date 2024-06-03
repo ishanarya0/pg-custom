@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v5  # Official Docker build and push action
         with:
           push: true  # Push image to Docker Hub
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.2.0  # Replace with your desired tag
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.3.0  # Replace with your desired tag
           context: .
           platforms: linux/amd64,linux/arm64
           build-args: |  # Pass environment variables to build process
@@ -39,5 +39,5 @@ jobs:
             RUN apt-get update && \
             apt-get install -y git make gcc
 
-            RUN git clone https://github.com/pgpartman/pg_partman
+            RUN git clone https://github.com/pgpartman/pg_partman --branch 4.7.4
             RUN cd pg_partman && make NO_BGW=1 install
