@@ -26,7 +26,9 @@ jobs:
         uses: docker/build-push-action@v3  # Official Docker build and push action
         with:
           push: true  # Push image to Docker Hub
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.1.0  # Replace with your desired tag
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.1.0-amd64  # x86_64 tag
+            ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.1.0-arm64  # arm64 tag
           build-args: |  # Pass environment variables to build process
             POSTGRES_VERSION=15
           # Include the Dockerfile content directly:
