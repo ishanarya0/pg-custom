@@ -1,4 +1,4 @@
-name: Docker B P 
+name: Build and Push Docker Image
 
 on:
   # Run workflow on push events to the main branch
@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-push-to-docker:
+  build-and-push:
     runs-on: ubuntu-latest  # Replace with your preferred runner
 
     steps:
@@ -26,9 +26,8 @@ jobs:
         uses: docker/build-push-action@v5  # Official Docker build and push action
         with:
           push: true  # Push image to Docker Hub
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.5.0  # Replace with your desired tag
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.3.0  # Replace with your desired tag
           context: .
           platforms: linux/amd64,linux/arm64
           build-args: |  # Pass environment variables to build process
             POSTGRES_VERSION=15
-            PARTMAN_VERSION=4.7.1
