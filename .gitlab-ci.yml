@@ -1,6 +1,5 @@
 stages:
   - build_and_push
-
 build-and-push:
   stage: build_and_push
   variables:
