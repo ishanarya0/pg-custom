@@ -1,26 +1,40 @@
-name: Build Dev
+name: Build and Push Docker Image
 
-on: workflow_dispatch
+on:
+  # Trigger workflow manually
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-push:
+    runs-on: ubuntu-latest  # Replace with your preferred runner
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Fetches code from your repository
+
+      - name: Login to Docker Hub (using secrets)
+        uses: docker/login-action@v2  # Official Docker login action
         with:
-          fetch-depth: 0
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
+
+      - name: Set up Docker Buildx (optional for multi-platform builds)
+        uses: docker/setup-buildx-action@v3  # Optional for multi-arch builds
+
+      - name: Build Docker image (using build args)
+        uses: docker/build-push-action@v3  # Official Docker build and push action
         with:
-          push: true
-          file: "./Dockerfile"
-          tags: |
-            ishanarya0/pg-custom:dev
+          push: true  # Push image to Docker Hub
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pg-custom:0.1.0  # Replace with your desired tag
+          build-args: |  # Pass environment variables to build process
+            POSTGRES_VERSION=15
+          # Include the Dockerfile content directly:
+          dockerfile: |
+            ARG POSTGRES_VERSION
+            FROM postgres:$POSTGRES_VERSION
+
+            RUN apt-get update && \
+            apt-get install -y git make gcc
+
+            RUN git clone https://github.com/pgpartman/pg_partman
+            RUN cd pg_partman && make NO_BGW=1 install
